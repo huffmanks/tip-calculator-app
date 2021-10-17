@@ -1,6 +1,8 @@
 const formEl = document.querySelector('#form')
 const billEl = document.querySelector('#bill')
 const peopleEl = document.querySelector('#people')
+const percentsEl = document.querySelectorAll('input[name="percent"]')
+const radioEl = document.querySelectorAll('input[type="radio"]')
 const customTipEl = document.querySelector('#custom-tip')
 const customLabelEl = document.querySelector('label[for="custom-tip"]')
 
@@ -22,37 +24,47 @@ resetEl.addEventListener('click', () => {
     billTotalEl.innerHTML = '0.00'
 })
 
-// Form onchange
-
+// Update results
 const getUpdate = (e) => {
-    const percentsEl = Array.from(document.querySelectorAll('input[name="percent"]'))
+    const selectedPercentEl = document.querySelector('input[name="percent"]:checked')
 
-    percentsEl.map((percentEl) => {
-        if (e.target !== customTipEl) {
-            customTipEl.setAttribute('type', 'radio')
-            customLabelEl.style.display = 'block'
-        } else {
-            customTipEl.setAttribute('type', 'text')
-            customLabelEl.style.display = 'none'
-        }
+    if (e.target !== customTipEl && selectedPercentEl) {
+        customTipEl.setAttribute('type', 'radio')
+        customTipEl.checked = false
+        customLabelEl.style.display = 'block'
+        e.target.checked = true
+    } else {
+        customTipEl.setAttribute('type', 'text')
+        customLabelEl.style.display = 'none'
+    }
 
-        if (e.target === percentEl) {
-            let percentage = e.target.value
-            // let percentage = e.target === percentEl && isNaN(e.target.value) ? percentEl.value = 0: percentEl.value
+    const customTipAttr = customTipEl.getAttribute('type')
 
-            const tipPer = (billEl.value * (percentage / 100)) / (!peopleEl.value ? (peopleEl.value = 1) : peopleEl.value)
-            tipPerEl.innerHTML = tipPer.toFixed(2)
+    if (selectedPercentEl) {
+        let percentage = selectedPercentEl.value
+        getCalc(percentage)
+    } else if (customTipAttr === 'text') {
+        let percentage = customTipEl.value
+        getCalc(percentage)
+    } else {
+        let percentage = 0
+        getCalc(percentage)
+    }
+}
 
-            const tipTotal = billEl.value * (percentage / 100)
-            tipTotalEl.innerHTML = tipTotal.toFixed(2)
+// Calculate numbers
+const getCalc = (percentage) => {
+    const tipPer = (billEl.value * (percentage / 100)) / (!peopleEl.value ? (peopleEl.value = 1) : peopleEl.value)
+    tipPerEl.innerHTML = tipPer.toFixed(2)
 
-            const billTotal = (+billEl.value + tipTotal).toFixed(2)
-            billTotalEl.innerHTML = billTotal
+    const tipTotal = billEl.value * (percentage / 100)
+    tipTotalEl.innerHTML = tipTotal.toFixed(2)
 
-            const billPer = billTotal / (!peopleEl.value ? (peopleEl.value = 1) : peopleEl.value)
-            billPerEl.innerHTML = billPer.toFixed(2)
-        }
-    })
+    const billTotal = (+billEl.value + tipTotal).toFixed(2)
+    billTotalEl.innerHTML = billTotal
+
+    const billPer = billTotal / (!peopleEl.value ? (peopleEl.value = 1) : peopleEl.value)
+    billPerEl.innerHTML = billPer.toFixed(2)
 }
 
 formEl.addEventListener('change', getUpdate)
