@@ -2,7 +2,7 @@ const formEl = document.querySelector('#form')
 const billEl = document.querySelector('#bill')
 const peopleEl = document.querySelector('#people')
 const percentsEl = document.querySelectorAll('input[name="percent"]')
-const radioEl = document.querySelectorAll('input[type="radio"]')
+// const radioEl = document.querySelectorAll('input[type="radio"]')
 const customTipEl = document.querySelector('#custom-tip')
 const customLabelEl = document.querySelector('label[for="custom-tip"]')
 
@@ -17,6 +17,10 @@ const resetEl = document.querySelector('#reset')
 resetEl.addEventListener('click', () => {
     billEl.value = null
     peopleEl.value = null
+
+    customTipEl.setAttribute('type', 'radio')
+    customTipEl.checked = false
+    customLabelEl.style.display = 'block'
 
     tipPerEl.innerHTML = '0.00'
     tipTotalEl.innerHTML = '0.00'
